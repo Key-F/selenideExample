@@ -8,6 +8,7 @@ import static com.codeborne.selenide.Condition.interactable;
 import static com.codeborne.selenide.Condition.partialText;
 import static com.codeborne.selenide.Selenide.*;
 import static com.codeborne.selenide.WebDriverConditions.urlContaining;
+import static com.codeborne.selenide.WebDriverRunner.getWebDriver;
 
 public class ResultsPage2 {
 
@@ -21,6 +22,7 @@ public class ResultsPage2 {
     }
 
     public void goToUrl(int num, String urlText) {
+        goToLastWindow();
         $$(RESULTS_CSS).get(num)
                 .shouldBe(interactable)
                 .shouldHave(partialText(urlText))
@@ -29,8 +31,12 @@ public class ResultsPage2 {
     }
 
     public String getCurrentUrlOfResult(String partOfUrl) {
-        switchTo().window(1);
+        goToLastWindow();
         webdriver().shouldHave(urlContaining(partOfUrl.toLowerCase()), Duration.ofSeconds(3));
         return webdriver().driver().getCurrentFrameUrl();
+    }
+
+    public static void goToLastWindow() {
+        switchTo().window(getWebDriver().getWindowHandles().size() - 1);
     }
 }
